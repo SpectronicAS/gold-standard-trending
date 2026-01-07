@@ -18,7 +18,11 @@ def wavelengthResults(lines):
         absorbances.append(float(ab))
     peaks, _ = find_peaks(absorbances, height=0.3)
     for peak in peaks:
-        wlpeaks.append(round(wavelengths[peak], 2))
+        with open("wavelengths.txt") as f:
+            wls = f.read().splitlines()
+        for wl in wls:
+            if wavelengths[peak] <= (float(wl) + 5) and wavelengths[peak] >= (float(wl) - 5):
+                wlpeaks.append(round(wavelengths[peak], 2))
     return wlpeaks
 
 
@@ -31,4 +35,5 @@ def absorbanceResults(lines):
 
 wlresults = wavelengthResults(parseFile("coords.txt"))
 absresults = absorbanceResults(parseFile("absorbance.txt"))
-print(calcert(wlresults, absresults, "as"))
+cert = calcert(wlresults, absresults, "as")
+print(cert[0], cert[1])

@@ -1,6 +1,4 @@
-import json
 from dataclasses import dataclass, fields
-from pathlib import Path
 
 @dataclass
 class EngineerStandard:
@@ -11,12 +9,21 @@ class EngineerStandard:
     wl440: float = 0
 
     @classmethod
-    def from_file(cls, path: Path) -> "EngineerStandard":
-        with path.open("r", encoding="utf-8") as f:
-            raw = json.load(f)
+    def from_file(cls, path: str):
+        data = {}
+        with open(path) as f:
+            for line in f:
+                if "=" not in line:
+                    continue
+
+                key, value = line.strip().split("=")
+
+                if key not in cls.__annotations__:
+                    continue
+            
+                field_type = cls.__annotations__[key]
+                data[key] = field_type(value)
         
-        valid_keys = {f.name for f in fields(cls)}
-        data = {k: v for k, v in raw.items() if k in valid_keys}
 
         return cls(**data)
     
