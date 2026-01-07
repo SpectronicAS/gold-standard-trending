@@ -12,9 +12,6 @@ class EngineerStandard:
 
     @classmethod
     def from_file(cls, path: Path) -> "EngineerStandard":
-        if not path.exists():
-            return cls()
-        
         with path.open("r", encoding="utf-8") as f:
             raw = json.load(f)
         
@@ -22,6 +19,10 @@ class EngineerStandard:
         data = {k: v for k, v in raw.items() if k in valid_keys}
 
         return cls(**data)
+    
+    def return_attributes(self) -> list[float]:
+        return[self.wl635, self.wl590, self.wl546, self.wl465, self.wl440]
+
     
 def createStandard(eng_name, wl635, wl590, wl546, wl465, wl440):
     standard = {

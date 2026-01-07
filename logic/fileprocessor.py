@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.signal import find_peaks
+from calcert import calcert
 
 def parseFile(filepath):
     with open(filepath) as f:
@@ -27,3 +28,7 @@ def absorbanceResults(lines):
         _, ab = line.split("=")
         absorbances.append(float(ab))
     return absorbances
+
+wlresults = wavelengthResults(parseFile("coords.txt"))
+absresults = absorbanceResults(parseFile("absorbance.txt"))
+print(calcert(wlresults, absresults, "as"))
