@@ -41,4 +41,3 @@ def createStandard(eng_name, wl635, wl590, wl546, wl465, wl440):
     }
     with open(f"{eng_name}.txt", "w") as file:
         file.write(standard)
-

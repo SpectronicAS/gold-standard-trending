@@ -28,4 +28,3 @@ def calcert(wavelengthResults, absorbanceResults, setName: str):
         else:
             absresults.append("Pass")
     return wlresults, absresults, wlvariance, absvariance
-
