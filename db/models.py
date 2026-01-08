@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, Float, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, Float, DateTime
+from sqlalchemy.orm import relationship
 from datetime import datetime
 from db import Base
 
@@ -17,13 +18,6 @@ class BioCal(Base):
     abs3 = Column(Float, nullable=False)
     abs4 = Column(Float, nullable=False)
     abs5 = Column(Float, nullable=False)
-
-class Variance(Base):
-    __tablename__="variance"
-
-    id = Column(Integer, primary_key=True)
-    biocal_id = Column(Integer, ForeignKey("biocal.id"), nullable=False)
-
     wl1var = Column(Float, nullable=False)
     wl2var = Column(Float, nullable=False)
     wl3var = Column(Float, nullable=False)
