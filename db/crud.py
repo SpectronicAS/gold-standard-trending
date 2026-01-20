@@ -1,30 +1,31 @@
 from db import SessionLocal
 from models import BioCal
 
-def add_cal(wl1, wl2, wl3, wl4, wl5, abs1, abs2, abs3, abs4, abs5, wl1var, wl2var, wl3var, wl4var, wl5var, abs1var, abs2var, abs3var, abs4var, abs5var):
+def add_cal(values: dict):
     session = SessionLocal()
+    data = values.keys()
     try:
         biocal = BioCal(
-            wl1=wl1,
-            wl2=wl2,
-            wl3=wl3, 
-            wl4=wl4, 
-            wl5=wl5, 
-            abs1=abs1, 
-            abs2=abs2, 
-            abs3=abs3, 
-            abs4=abs4, 
-            abs5=abs5,
-            wl1var=wl1var,
-            wl2var=wl2var, 
-            wl3var=wl3var, 
-            wl4var=wl4var, 
-            wl5var=wl5var, 
-            abs1var=abs1var, 
-            abs2var=abs2var, 
-            abs3var=abs3var, 
-            abs4var=abs4var, 
-            abs5var=abs5var
+            wl1=data["wl1"],
+            wl2=data["wl2"],
+            wl3=data["wl3"],
+            wl4=data["wl4"],
+            wl5=data["wl5"], 
+            abs1=data["abs1"], 
+            abs2=data["abs2"], 
+            abs3=data["abs3"],
+            abs4=data["abs4"],
+            abs5=data["abs5"],
+            wl1var=data["wl1var"],
+            wl2var=data["wl2var"],
+            wl3var=data["wl3var"],
+            wl4var=data["wl4var"],
+            wl5var=data["wl5var"],
+            abs1var=data["abs1var"], 
+            abs2var=data["abs2var"],
+            abs3var=data["abs3var"],
+            abs4var=data["abs4var"],
+            abs5var=data["abs5var"]
             )
         session.add(biocal)
         session.commit()
