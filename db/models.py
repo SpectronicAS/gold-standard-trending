@@ -1,5 +1,4 @@
 from sqlalchemy import Column, Integer, Float, DateTime
-from sqlalchemy.orm import relationship
 from datetime import datetime
 from db import Base
 
@@ -28,3 +27,8 @@ class BioCal(Base):
     abs3var = Column(Float, nullable=False)
     abs4var = Column(Float, nullable=False)
     abs5var = Column(Float, nullable=False)
+
+
+def return_columns(table: BioCal):
+    return table.__table__.columns.keys()
+        
