@@ -32,14 +32,14 @@ def add_cal(values: dict):
     finally:
         session.close()
 
-def edit_cal():
+def edit_cal(id, values: dict):
     session = SessionLocal()
+    record = session.get(BioCal, id)
     try:
-        record = session.get(BioCal, id)
         if not record:
             raise ValueError("Record not Found")
-        
-    return None
+    finally:
+        add_cal(values)
 
 
 def query_cals():
