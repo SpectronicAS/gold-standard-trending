@@ -6,18 +6,23 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QDialog, QDialogButtonBox
 
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, backend):
         super().__init__()
+
+        self.backend = backend
         self.setWindowTitle("Monthly Bio-Cal Tracker")
         self.setFixedSize(QSize(1200, 700))
+
+        self.data = {}
+
 
         layout1 = QHBoxLayout()
         layout2 = QVBoxLayout()
         layout3 = QGridLayout()
         layout4 = QGridLayout()
 
-        addBtn = QPushButton("Add Calibration")
-        addBtn.clicked.connect(self.new_cal)
+        self.addBtn = QPushButton("Add Calibration")
+        self.addBtn.clicked.connect(self.new_cal)
         delBtn = QPushButton("Delete Calibration")
         editBtn = QPushButton("Edit Calibration")
         calcBtn = QPushButton("Calculate Statistics")
@@ -32,7 +37,7 @@ class MainWindow(QMainWindow):
         layout1.addWidget(self.listBox)
         layout1.addLayout(layout2)
 
-        layout3.addWidget(addBtn, 0, 0)
+        layout3.addWidget(self.addBtn, 0, 0)
         layout3.addWidget(delBtn, 0, 1)
         layout3.addWidget(editBtn, 1,0)
         layout3.addWidget(calcBtn, 1,1)
@@ -54,7 +59,9 @@ class MainWindow(QMainWindow):
     
     def new_cal(self):
         dlg = BioCalDialog(self)
-        dlg.exec()
+        if dlg.exec():
+            data = dlg.get_data()
+            
 
 
 class BioCalDialog(QDialog):
@@ -126,5 +133,10 @@ class BioCalDialog(QDialog):
             "Absorbance Samples (*.qua)"
         )
         if file_path:
-            self.wlLocation.setText(file_path)
-app = QApplication(sys.argv)
+            self.absLocation.setText(file_path)
+
+    def get_data(self):
+        return {
+            "wl_file_path:": self.wlLocation.text(),
+            "abs_file_path": self.absLocation.text()
+        }
