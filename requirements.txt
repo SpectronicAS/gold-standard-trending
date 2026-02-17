@@ -3,3 +3,4 @@ numpy
 matplotlib
 scipy
 sqlalchemy
+PyQt6
