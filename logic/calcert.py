@@ -1,6 +1,4 @@
-from engineerset import EngineerStandard
-
-
+from logic.engineerset import EngineerStandard
 def loadStandard(setName: str):
     standard = EngineerStandard
     return standard.from_file(f"{setName}.txt")
