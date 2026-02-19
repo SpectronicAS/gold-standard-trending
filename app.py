@@ -1,14 +1,20 @@
 #from db.db import engine
 #from db.models import Base
 from gui.gui import MainWindow
-from logic.calcert import calcert
+from PyQt6.QtWidgets import QApplication
+import sys
 
 def main():
-    backend = calcert
-    window = MainWindow(backend)
-    window.show()
+    app = QApplication(sys.argv)
 
-main()
+    window = MainWindow()
+
+    window.show()
+    sys.exit(app.exec())
+
+if __name__ == "__main__":
+    main()
+
 
 
 

@@ -1,15 +1,12 @@
-import sys
-
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtWidgets import QApplication, QMainWindow, QDialog, QDialogButtonBox, QLineEdit, QListWidget, QPushButton, QGridLayout, QHBoxLayout, QVBoxLayout, QLabel, QWidget, QFileDialog
 
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, backend):
+    def __init__(self):
         super().__init__()
 
-        self.backend = backend
         self.setWindowTitle("Monthly Bio-Cal Tracker")
         self.setFixedSize(QSize(1200, 700))
 
@@ -60,7 +57,10 @@ class MainWindow(QMainWindow):
     def new_cal(self):
         dlg = BioCalDialog(self)
         if dlg.exec():
-            data = dlg.get_data()
+            self.data = dlg.get_data
+    
+    def get_data(self):
+        return self.data
             
 
 
