@@ -1,7 +1,7 @@
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtWidgets import QApplication, QMainWindow, QDialog, QDialogButtonBox, QLineEdit, QListWidget, QPushButton, QGridLayout, QHBoxLayout, QVBoxLayout, QLabel, QWidget, QFileDialog
-
-
+from db.crud import add_cal, edit_cal, delete_cal, query_cals, query_data
+from logic.calcert import Calcert
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -9,8 +9,6 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle("Monthly Bio-Cal Tracker")
         self.setFixedSize(QSize(1200, 700))
-
-        self.data = {}
 
 
         layout1 = QHBoxLayout()
@@ -29,7 +27,7 @@ class MainWindow(QMainWindow):
         searchBtn = QPushButton("Search")
 
         self.listBox = QListWidget()
-
+        self.populate_list()
 
         layout1.addWidget(self.listBox)
         layout1.addLayout(layout2)
@@ -57,10 +55,23 @@ class MainWindow(QMainWindow):
     def new_cal(self):
         dlg = BioCalDialog(self)
         if dlg.exec():
-            self.data = dlg.get_data
+            data = dlg.get_data()
+
     
-    def get_data(self):
-        return self.data
+
+    def populate_list(self):
+        self.listBox.clear()
+        rows = query_data()
+        for row in rows:
+            self.listBox.addItem(row)
+
+    def model_results(self, wl_results, abs_results):
+        result = {}
+        for i, value in enumerate(wl_results):
+            result[f"wl{i}"] = value
+        for i, value in enumerate(abs_results):
+            result[f"abs{i}"] = value
+        return result
             
 
 

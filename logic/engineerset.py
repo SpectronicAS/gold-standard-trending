@@ -1,4 +1,4 @@
-from dataclasses import dataclass, fields
+from dataclasses import dataclass
 
 @dataclass
 class EngineerStandard:
@@ -41,3 +41,7 @@ def createStandard(eng_name, wl635, wl590, wl546, wl465, wl440):
     }
     with open(f"{eng_name}.txt", "w") as file:
         file.write(standard)
+
+def loadStandard( setName: str):
+    standard = EngineerStandard()
+    return standard.from_file(f"{setName}.txt")
