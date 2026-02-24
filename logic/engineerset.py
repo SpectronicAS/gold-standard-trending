@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
 
 @dataclass
 class EngineerStandard:
@@ -9,23 +9,15 @@ class EngineerStandard:
     wl440: float = 0
 
     @classmethod
-    def from_file(cls, path: str):
-        data = {}
-        with open(path) as f:
-            for line in f:
-                if "=" not in line:
-                    continue
+    def __init__(self, set_name: str):
+        attrs = [f.name for f in fields(self)]
+        with open(f"{set_name}.txt") as s:
+            absorbances = s.read().splitlines()
 
-                key, value = line.strip().split("=")
+        for attr, value in zip(attrs, absorbances):
+            setattr(self, attr, value)
 
-                if key not in cls.__annotations__:
-                    continue
-            
-                field_type = cls.__annotations__[key]
-                data[key] = field_type(value)
-        
 
-        return cls(**data)
     
     def return_attributes(self) -> list[float]:
         return[self.wl635, self.wl590, self.wl546, self.wl465, self.wl440]

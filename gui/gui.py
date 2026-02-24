@@ -56,6 +56,9 @@ class MainWindow(QMainWindow):
         dlg = BioCalDialog(self)
         if dlg.exec():
             data = dlg.get_data()
+            calcert = Calcert(data)
+            add_cal(calcert.return_dict())
+            self.populate_list()
 
     
 
@@ -148,6 +151,6 @@ class BioCalDialog(QDialog):
 
     def get_data(self):
         return {
-            "wl_file_path:": self.wlLocation.text(),
+            "wl_file_path": self.wlLocation.text(),
             "abs_file_path": self.absLocation.text()
         }

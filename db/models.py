@@ -1,12 +1,12 @@
 from sqlalchemy import Column, Integer, Float, DateTime, Boolean, String
-from datetime import datetime
+from datetime import datetime, timezone
 from db.db import Base
 
 class BioCal(Base):
     __tablename__ = "biocal"
 
     id = Column(Integer, primary_key=True)
-    created_at = Column(DateTime, default=datetime.astimezone)
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     wl1 = Column(Float, nullable=False)
     wl2 = Column(Float, nullable=False)
     wl3 = Column(Float, nullable=False)
@@ -18,7 +18,7 @@ class BioCal(Base):
     abs4 = Column(Float, nullable=False)
     abs5 = Column(Float, nullable=False)
     setname = Column(String, nullable=False)
-    result = Column(Boolean, nullable=False)
+    result = Column(String, nullable=False)
 
 
 def return_columns(table: BioCal):

@@ -1,7 +1,5 @@
 from db.db import SessionLocal
 from db.models import BioCal
-from logic.calcert import Calcert
-from dataclasses import asdict
 
 
 def update_values(instance, data : dict, exclude=("id",)):
@@ -14,11 +12,11 @@ def update_values(instance, data : dict, exclude=("id",)):
 
     
 
-def add_cal(cal: Calcert):
+def add_cal(cal: dict):
     session = SessionLocal()
     try:
-        db_obj = BioCal(**asdict(cal))
-        session.add(db_obj)
+        biocal = BioCal(**cal)
+        session.add(biocal)
         session.commit()
     finally:
         session.close()
