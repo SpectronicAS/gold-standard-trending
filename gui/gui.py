@@ -1,5 +1,5 @@
 from PyQt6.QtCore import QSize, Qt
-from PyQt6.QtWidgets import QApplication, QMainWindow, QDialog, QDialogButtonBox, QLineEdit, QListWidget, QPushButton, QGridLayout, QHBoxLayout, QVBoxLayout, QLabel, QWidget, QFileDialog
+from PyQt6.QtWidgets import QApplication, QMainWindow, QDialog, QDialogButtonBox, QLineEdit, QListWidget, QPushButton, QGridLayout, QHBoxLayout, QVBoxLayout, QLabel, QWidget, QFileDialog, QTableWidget, QTableWidgetItem, QAbstractItemView
 from db.crud import add_cal, edit_cal, delete_cal, query_cals, query_data
 from logic.calcert import Calcert
 
@@ -18,24 +18,27 @@ class MainWindow(QMainWindow):
 
         self.addBtn = QPushButton("Add Calibration")
         self.addBtn.clicked.connect(self.new_cal)
-        delBtn = QPushButton("Delete Calibration")
-        editBtn = QPushButton("Edit Calibration")
-        calcBtn = QPushButton("Calculate Statistics")
+        self.delBtn = QPushButton("Delete Calibration")
+        self.delBtn.clicked.connect(self.del_cal)
+        self.editBtn = QPushButton("Edit Calibration")
+        self.calcBtn = QPushButton("Calculate Statistics")
 
         self.inputLine = QLineEdit("")
         self.inputLine.setPlaceholderText("Search Bar")
         searchBtn = QPushButton("Search")
 
-        self.listBox = QListWidget()
-        self.populate_list()
+        self.table = QTableWidget()
+        self.setup_table()
+        self.populate_table()
 
-        layout1.addWidget(self.listBox)
+
+        layout1.addWidget(self.table)
         layout1.addLayout(layout2)
 
         layout3.addWidget(self.addBtn, 0, 0)
-        layout3.addWidget(delBtn, 0, 1)
-        layout3.addWidget(editBtn, 1,0)
-        layout3.addWidget(calcBtn, 1,1)
+        layout3.addWidget(self.delBtn, 0, 1)
+        layout3.addWidget(self.editBtn, 1,0)
+        layout3.addWidget(self.calcBtn, 1,1)
 
         layout2.addStretch(1)
         layout2.addLayout(layout3)
@@ -58,15 +61,47 @@ class MainWindow(QMainWindow):
             data = dlg.get_data()
             calcert = Calcert(data)
             add_cal(calcert.return_dict())
-            self.populate_list()
+            self.populate_table()
 
-    
+    def setup_table(self):
+        self.table.setColumnCount(3)
+        self.table.setHorizontalHeaderLabels(
+            ["ID", "Created At", "Result"]
+        )
+        self.table.setEditTriggers(
+            QAbstractItemView.EditTrigger.NoEditTriggers
+        )
 
-    def populate_list(self):
-        self.listBox.clear()
+        self.table.setSelectionBehavior(
+            QAbstractItemView.SelectionBehavior.SelectRows
+        )
+
+        self.table.setSelectionMode(
+            QAbstractItemView.SelectionMode.SingleSelection
+        )
+
+        self.table.setSortingEnabled(True)
+
+    def populate_table(self):
         rows = query_data()
-        for row in rows:
-            self.listBox.addItem(row)
+        self.table.setRowCount(len(rows))
+        
+        for row_index, row in enumerate(rows):
+            self.table.setItem(
+                row_index, 0,
+                QTableWidgetItem(str(row.id))
+            )
+            self.table.setItem(
+                row_index, 1,
+                QTableWidgetItem(
+                    row.created_at.strftime("%Y-%m-%d %H:%M")
+                )
+            )
+            self.table.setItem(
+                row_index, 2,
+                QTableWidgetItem(f"{row.result}")
+            )
+            self.table.resizeColumnsToContents()
 
     def model_results(self, wl_results, abs_results):
         result = {}
@@ -75,7 +110,16 @@ class MainWindow(QMainWindow):
         for i, value in enumerate(abs_results):
             result[f"abs{i}"] = value
         return result
-            
+
+    def del_cal(self):
+        row = self.table.currentRow()
+        if row < 0:
+            return
+        else:
+            delete_cal(int(self.table.item(row,0).text()))
+            self.populate_table()
+    
+    
 
 
 class BioCalDialog(QDialog):
