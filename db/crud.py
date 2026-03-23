@@ -48,6 +48,21 @@ def query_data():
     session = SessionLocal()
     return session.query(BioCal.id, BioCal.created_at, BioCal.result).order_by(BioCal.created_at.desc()).all()
 
+def query_values(id):
+    session = SessionLocal()
+    return session.query(
+        BioCal.id, 
+        BioCal.abs1, 
+        BioCal.abs2, 
+        BioCal.abs3, 
+        BioCal.abs4, 
+        BioCal.abs5,
+        BioCal.wl1,
+        BioCal.wl2,
+        BioCal.wl3,
+        BioCal.wl4,
+        BioCal.wl5,
+        ).order_by(BioCal.created_at.desc()).where(BioCal.result == "Pass")
 
 def delete_cal(id) -> bool:
     session = SessionLocal()
