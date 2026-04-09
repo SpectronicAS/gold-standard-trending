@@ -2,7 +2,6 @@ from logic.engineerset import EngineerStandard, loadStandard
 from logic.fileprocessor import wavelengthResults, absorbanceResults, parseFile
 from dataclasses import dataclass, fields, asdict
 
-@dataclass
 class Calcert():
     wl1: float
     wl2: float
@@ -17,11 +16,9 @@ class Calcert():
     setname: str
     result: str
 
-    @classmethod
-    def __init__(self, data: dict):
-        self.calcert(data["wl_file_path"], data["abs_file_path"], "mfb")
+    def __init__(self, data: dict, set: str):
+        self.calcert(data["wl_file_path"], data["abs_file_path"], set)
     
-    @classmethod
     def calcert(self, wl_filepath, abs_filepath, set_name: str):
         setattr(self, "setname", set_name)
         standard = EngineerStandard(set_name).return_attributes()
@@ -55,3 +52,16 @@ class Calcert():
     
     def return_dict(self):
         return asdict(self)
+
+class Variances():
+    wl1: float
+    wl2: float
+    wl3: float
+    wl4: float
+    wl5: float
+    abs1: float
+    abs2: float
+    abs3: float
+    abs4: float
+    abs5: float
+

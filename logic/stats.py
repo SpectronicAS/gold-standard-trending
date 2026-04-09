@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from db.crud import query_values
+import statistics as s
 
 def get_results():
     results = query_values()
@@ -42,6 +43,13 @@ def get_results():
                     abs4.append(values.abs4)
                 case 4:
                     abs5.append(values.abs5)
+    return [wl1, wl2, wl3, wl4, wl5, abs1, abs2, abs3, abs4, abs5]
 
-def calc_means():
-    
+def calc_stats():
+    means = []
+    stdevs = []
+    results = get_results()
+    for result in results:
+        means.append(s.mean(result))
+        stdevs.append(s.stdev(result))
+    return means, stdevs
