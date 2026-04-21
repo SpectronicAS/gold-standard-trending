@@ -1,5 +1,5 @@
 from db.db import SessionLocal
-from db.models import BioCal
+from db.models import BioCal, Errors
 
 
 def update_values(instance, data : dict, exclude=("id",)):
@@ -61,7 +61,7 @@ def query_values(id):
         BioCal.wl2,
         BioCal.wl3,
         BioCal.wl4,
-        BioCal.wl5,
+        BioCal.wl5
         ).order_by(BioCal.created_at.desc()).where(BioCal.result == "Pass")
 
 def delete_cal(id) -> bool:
@@ -74,3 +74,8 @@ def delete_cal(id) -> bool:
         session.commit()
     finally:
         session.close()
+
+def get_errors(id):
+    session = SessionLocal()
+    data = session.query(BioCal.errors).where(BioCal.id == id)
+    return data

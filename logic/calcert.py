@@ -15,11 +15,14 @@ class Calcert():
     abs5: float
     setname: str
     result: str
+    errors: list
+
 
     def __init__(self, data: dict, set: str):
         self.calcert(data["wl_file_path"], data["abs_file_path"], set)
     
     def calcert(self, wl_filepath, abs_filepath, set_name: str):
+        errors = []
         setattr(self, "setname", set_name)
         standard = EngineerStandard(set_name).return_attributes()
         setattr(self, "result", "Pass")
@@ -31,10 +34,13 @@ class Calcert():
             if abs(value - float(wl_standard[i])) > 1:
                 result = "Fail"
                 setattr(self, "result", result)
+                errors.append(value - float(wl_standard[i]))
         for i, value in enumerate(abs_results):
             if abs(value - float(standard[i])) > 0.01:
                 result = "Fail"
                 setattr(self, "result", result)
+                errors.append(value - float(wl_standard[i]))
+        setattr(self, "errors", errors)
        
     def populate(self, wavelengths, absorbances):
         attrs = [f.name for f in fields(self)]
@@ -52,16 +58,3 @@ class Calcert():
     
     def return_dict(self):
         return asdict(self)
-
-class Variances():
-    wl1: float
-    wl2: float
-    wl3: float
-    wl4: float
-    wl5: float
-    abs1: float
-    abs2: float
-    abs3: float
-    abs4: float
-    abs5: float
-
