@@ -20,12 +20,12 @@ class BioCal(Base):
     abs5 = Column(Float, nullable=False)
     setname = Column(String, nullable=False)
     result = Column(String, nullable=False)
-    errors = relationship("Errors", back_populates="biocal", uselist=False)
+    errors = relationship("Errors", backref="biocal", uselist=False)
 
 class Errors(Base):
     __tablename__ = "errors"
     id = Column(Integer, primary_key=True)
-    cal_id = Column(Integer, ForeignKey("biocal.id"), unique=True)
+    cal_id = Column(ForeignKey("biocal.id"), unique=True)
     
     wl1 = Column(Float, nullable=False)
     wl2 = Column(Float, nullable=False)
@@ -38,7 +38,7 @@ class Errors(Base):
     abs4 = Column(Float, nullable=False)
     abs5 = Column(Float, nullable=False)
 
-    biocal = relationship("BioCal", back_populates="errors")
+
 
 
 def return_columns(table: BioCal):

@@ -59,7 +59,7 @@ class MainWindow(QMainWindow):
         dlg = BioCalDialog(self)
         if dlg.exec():
             data = dlg.get_data()
-            calcert = Calcert(data)
+            calcert = Calcert(data, "mfb")
             add_cal(calcert.return_dict())
             self.populate_table()
 

@@ -15,7 +15,12 @@ def update_values(instance, data : dict, exclude=("id",)):
 def add_cal(cal: dict):
     session = SessionLocal()
     try:
-        biocal = BioCal(**cal)
+        errors_data = cal.get("errors")
+        main_data = {k: v for k, v in cal.items() if k != "errors"}
+
+        biocal = BioCal(**main_data)
+        biocal.errors = Errors(**errors_data)
+
         session.add(biocal)
         session.commit()
     finally:
@@ -48,20 +53,20 @@ def query_data():
     session = SessionLocal()
     return session.query(BioCal.id, BioCal.created_at, BioCal.result).order_by(BioCal.created_at.desc()).all()
 
-def query_values(id):
+def query_values():
     session = SessionLocal()
     return session.query(
-        BioCal.id, 
-        BioCal.abs1, 
-        BioCal.abs2, 
-        BioCal.abs3, 
-        BioCal.abs4, 
-        BioCal.abs5,
-        BioCal.wl1,
-        BioCal.wl2,
-        BioCal.wl3,
-        BioCal.wl4,
-        BioCal.wl5
+        BioCal.errors.id, 
+        BioCal.errors.abs1, 
+        BioCal.errors.abs2, 
+        BioCal.errors.abs3, 
+        BioCal.errors.abs4, 
+        BioCal.errors.abs5,
+        BioCal.errors.wl1,
+        BioCal.errors.wl2,
+        BioCal.errors.wl3,
+        BioCal.errors.wl4,
+        BioCal.errors.wl5
         ).order_by(BioCal.created_at.desc()).where(BioCal.result == "Pass")
 
 def delete_cal(id) -> bool:

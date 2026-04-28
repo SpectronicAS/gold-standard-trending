@@ -18,10 +18,9 @@ class Calcert:
         self.result = "Pass"
         self.errors = None
 
-        self.calcert(data["wl_file_path"], data["abs_file_path"])
 
-
-    def calcert(self, wl_filepath, abs_filepath):
+    def calcert(self, wl_filepath, abs_filepath, set_name):
+        errors = []
         errors_dict = {}
         standard = EngineerStandard(self.setname).return_attributes()
         wl_results = wavelengthResults(parseFile(wl_filepath))
@@ -33,14 +32,19 @@ class Calcert:
             if abs(value - float(wl_standard[i])) > 1:
                 result = "Fail"
                 setattr(self, "result", result)
-            errors_dict[f"wl{i+1}"] = value - float(wl_standard[i])
+                errors.append(value - float(wl_standard[i]))
         for i, value in enumerate(abs_results):
             if abs(value - float(standard[i])) > 0.01:
                 result = "Fail"
                 setattr(self, "result", result)
-            errors_dict[f"abs{i+1}"] = value - float(standard[i])
+                errors.append(value - float(wl_standard[i]))
+        for i, error in enumerate(errors):
+            if i < 5:
+                errors_dict[f"wl{i+1}"] = error
+            else:
+                errors_dict[f"abs{i+1}"] = error
         setattr(self, "errors", errors_dict)
-
+    
     def assign_list(self, values, attrs):
         for attr, value in zip(attrs, values):
             setattr(self, attr, value)
@@ -49,6 +53,3 @@ class Calcert:
         with open("wavelengths.txt") as f:
             wavelengths = f.read().splitlines()
         return wavelengths
-    
-    def return_dict(self):
-        return vars(self)
