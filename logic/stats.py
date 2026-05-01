@@ -45,11 +45,59 @@ def get_results():
                     abs5.append(values.abs5)
     return [wl1, wl2, wl3, wl4, wl5, abs1, abs2, abs3, abs4, abs5]
 
-def calc_stats():
-    means = []
-    stdevs = []
-    results = get_results()
-    for result in results:
-        means.append(s.mean(result))
-        stdevs.append(s.stdev(result))
-    return means, stdevs
+def calc_stats(results):
+    wl1 = []
+    wl2 = []
+    wl3 = []
+    wl4 = []
+    wl5 = []
+    abs1 = []
+    abs2 = []
+    abs3 = []
+    abs4 = []
+    abs5 = []
+    length = len(results[0])
+
+    for i, report in enumerate(results):
+        for result in report:
+            match i:
+                case 0:
+                    temp = []
+                    temp.append(result)
+                    wl1.append(s.mean(temp))
+                case 1:
+                    temp = []
+                    temp.append(result)
+                    wl2.append(s.mean(temp))
+                case 2:
+                    temp = []
+                    temp.append(result)
+                    wl3.append(s.mean(temp))
+                case 3:
+                    temp = []
+                    temp.append(result)
+                    wl4.append(s.mean(temp))
+                case 4:
+                    temp = []
+                    temp.append(result)
+                    wl5.append(s.mean(temp))
+                case 5:
+                    temp = []
+                    temp.append(result)
+                    abs1.append(s.mean(temp))
+                case 6:
+                    temp = []
+                    temp.append(result)
+                    abs2.append(s.mean(temp))
+                case 7:
+                    temp = []
+                    temp.append(result)
+                    abs3.append(s.mean(temp))
+                case 8:
+                    temp = []
+                    temp.append(result)
+                    abs4.append(s.mean(temp))
+                case 9:
+                    temp = []
+                    temp.append(result)
+                    abs5.append(s.mean(temp))                
