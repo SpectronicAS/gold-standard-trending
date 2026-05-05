@@ -54,20 +54,13 @@ def query_data():
     return session.query(BioCal.id, BioCal.created_at, BioCal.result).order_by(BioCal.created_at.desc()).all()
 
 def query_values():
+    output = []
     session = SessionLocal()
-    return session.query(
-        BioCal.errors.id, 
-        BioCal.errors.abs1, 
-        BioCal.errors.abs2, 
-        BioCal.errors.abs3, 
-        BioCal.errors.abs4, 
-        BioCal.errors.abs5,
-        BioCal.errors.wl1,
-        BioCal.errors.wl2,
-        BioCal.errors.wl3,
-        BioCal.errors.wl4,
-        BioCal.errors.wl5
-        ).order_by(BioCal.created_at.desc()).where(BioCal.result == "Pass")
+    results = session.query(Errors).join(BioCal).filter(BioCal.result == "Pass").all()
+    for result in results:
+        temp = [result.wl1, result.wl2, result.wl3, result.wl4, result.wl5, result.abs1, result.abs2, result.abs3, result.abs4, result.abs5]
+        output.append(temp)
+    return output
 
 def delete_cal(id) -> bool:
     session = SessionLocal()

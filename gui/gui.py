@@ -1,7 +1,9 @@
-from PyQt6.QtCore import QSize, Qt
-from PyQt6.QtWidgets import QApplication, QMainWindow, QDialog, QDialogButtonBox, QLineEdit, QListWidget, QPushButton, QGridLayout, QHBoxLayout, QVBoxLayout, QLabel, QWidget, QFileDialog, QTableWidget, QTableWidgetItem, QAbstractItemView
+from PyQt6.QtCore import QSize
+from PyQt6.QtWidgets import QComboBox, QMainWindow, QDialog, QDialogButtonBox, QLineEdit, QPushButton, QGridLayout, QHBoxLayout, QVBoxLayout, QLabel, QWidget, QFileDialog, QTableWidget, QTableWidgetItem, QAbstractItemView
 from db.crud import add_cal, edit_cal, delete_cal, query_cals, query_data
 from logic.calcert import Calcert
+import pyqtgraph as pg
+from logic.stats import calc_stats, get_results
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -25,43 +27,85 @@ class MainWindow(QMainWindow):
 
         self.inputLine = QLineEdit("")
         self.inputLine.setPlaceholderText("Search Bar")
-        searchBtn = QPushButton("Search")
+        self.searchBtn = QPushButton("Search")
 
         self.table = QTableWidget()
         self.setup_table()
         self.populate_table()
 
+        self.plot_wls = pg.PlotWidget()
+        self.plot_abs = pg.PlotWidget()
+        
+        self.set_plots()
 
         layout1.addWidget(self.table)
+        
         layout1.addLayout(layout2)
 
         layout3.addWidget(self.addBtn, 0, 0)
         layout3.addWidget(self.delBtn, 0, 1)
-        layout3.addWidget(self.editBtn, 1,0)
-        layout3.addWidget(self.calcBtn, 1,1)
 
-        layout2.addStretch(1)
+
+        layout2.addWidget(self.plot_wls)
+        layout2.addWidget(self.plot_abs)
         layout2.addLayout(layout3)
         layout2.addSpacing(20)
-        layout2.addWidget(self.inputLine)
-        layout2.addSpacing(10)
-        
-        layout4.addWidget(QLabel(""), 0, 0)
-        layout4.addWidget(searchBtn,0,1)
-
+        layout4.addWidget(self.inputLine)
+        layout4.addWidget(self.searchBtn)
         layout2.addLayout(layout4)
+        
+
 
         widget = QWidget()
         widget.setLayout(layout1)
         self.setCentralWidget(widget)
     
+    def set_plots(self):
+        x = len(calc_stats(get_results())[0])
+        self.plot_wls.showGrid(x=True, y=True)
+        self.plot_wls.setBackground("w")
+        self.plot_wls.setXRange(0, x)
+
+        self.plot_abs.showGrid(x=True, y=True)
+        self.plot_abs.setBackground("w")
+        self.plot_abs.setXRange(0, x)
+
+    def plot_graph(self, graph, x, y, pen, brush):
+        graph.plot(x , y, pen=pen, symbol="+", symbolSize=15, symbolBrush=brush)
+
     def new_cal(self):
         dlg = BioCalDialog(self)
         if dlg.exec():
             data = dlg.get_data()
-            calcert = Calcert(data, "mfb")
+            calcert = Calcert(data, dlg.combobox.currentText())
             add_cal(calcert.return_dict())
+            self.set_plots()          
             self.populate_table()
+            plot_data = calc_stats(get_results())
+            count = 1
+            temp = 1
+            points = []
+            while temp <= len(plot_data[0]):
+                points.append(temp)
+                temp = temp + 1
+            for dat in plot_data:
+                match count:
+                    case 1 | 2 | 3 | 4 | 5 :
+                        pen = pg.mkPen(color=(0,0,255))
+                        self.plot_graph(self.plot_wls, points, dat, pen, "r")
+                        count = count + 1
+                    case 11 | 12 | 13 | 14 | 15:
+                        pen = pg.mkPen(color=(255,0,0))
+                        self.plot_graph(self.plot_wls, points, dat, pen, "b")
+                        count = count + 1
+                    case 6 | 7 | 8 | 9 | 10 :
+                        pen = pg.mkPen(color=(0,0,255))
+                        self.plot_graph(self.plot_abs, points, dat, pen, "r")
+                        count = count + 1
+                    case 16 | 17 | 18 | 19 | 20:
+                        pen = pg.mkPen(color=(255,0,0))
+                        self.plot_graph(self.plot_abs, points, dat, pen, "b")
+                        count = count + 1
 
     def setup_table(self):
         self.table.setColumnCount(3)
@@ -118,10 +162,8 @@ class MainWindow(QMainWindow):
         else:
             delete_cal(int(self.table.item(row,0).text()))
             self.populate_table()
+            self.set_plots()
     
-    
-
-
 class BioCalDialog(QDialog):
     def __init__(self, parent = None):
         super().__init__(parent)
@@ -139,15 +181,18 @@ class BioCalDialog(QDialog):
         self.wlLocation = QLineEdit()
         self.wlLocation.setPlaceholderText("Enter File Location of WL Scan")
         self.absLocation = QLineEdit()
-        self.absLocation.setPlaceholderText("Ender File Location of Abs Sample")
+        self.absLocation.setPlaceholderText("Enter File Location of Abs Sample")
         btn = QPushButton()
         btn2 = QPushButton()
         label = QLabel("Add Bio-Cal Results:")
         label.setStyleSheet("font-weight:bold; font-size: 18px")
+        self.combobox = QComboBox()
+        self.combobox.addItems(["MRB", "MFB", "AS"])
 
         layout1.addWidget(label)
         layout1.addStretch(20)
         
+        layout1.addWidget(self.combobox)
         layout2.addWidget(self.wlLocation)
         btn.clicked.connect(self.browse_wl)
         btn.setText("Browse")

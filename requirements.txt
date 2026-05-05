@@ -1,6 +1,6 @@
 pandas
 numpy
-matplotlib
+pyqtgraph
 scipy
 sqlalchemy
 PyQt6
